@@ -15,10 +15,11 @@
     "vuex": "^4.1.0"
   },
   "devDependencies": {
+    "@types/webpack-env": "^1.18.5",
     "@vitejs/plugin-vue": "^1.6.1",
-    "vite": "^2.5.4",
     "sass": "^1.62.1",
     "stylus": "^0.59.0",
-    "typescript": "~5.0.4"
+    "typescript": "~5.0.4",
+    "vite": "^2.5.4"
   }
 }
