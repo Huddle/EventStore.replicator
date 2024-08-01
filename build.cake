@@ -147,8 +147,8 @@ Task("Restore-DotNet-Dependencies")
         });
 		
 Task("WhatBuildToPutHere")
-	.IsDependentOn("Install-Node-Dependencies")
-	.IsDependentOn("Build-Front-End")
+	//.IsDependentOn("Install-Node-Dependencies")
+	//.IsDependentOn("Build-Front-End")
 	.IsDependentOn("Restore-DotNet-Dependencies")
     // .IsDependentOn("Restore")
     // .IsDependentOn("Config")
