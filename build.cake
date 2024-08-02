@@ -10,24 +10,35 @@
 #addin nuget:?package=semver
 #addin nuget:?package=SharpZipLib
 
+// #addin nuget:?package=Cake.Common&version=latest
+// #addin nuget:?package=Cake.Core&version=latest
+// #addin nuget:?package=Cake.Core&version=4.0.0
+// #addin nuget:?package=Cake.Common&version=4.0.0&loaddependencies=true
+
+
 #addin "Cake.Npm"
+
 
 using Semver;
 using System.Text.RegularExpressions;
+using System.IO;
 
 // =========
 // ARGUMENTS FROM COMMAND LINE
 // =========
-var target = Argument("target", "WhatBuildToPutHere");
+var target = Argument("target", "Pack");
 var configuration = Argument("configuration", "Release");
 var environment = Argument("environment", "Development");
 var useVersionFromFile = Argument<bool>("useVersionFromFile", true);
+// var packageFileName = Argument("packageFileName", "EventStoreReplicator.zip");
 
 // ================
 // GLOBAL CONSTANTS
 // ================
 const string solutionFile = "./EventStore.Replicator.sln";
 const string eventReplicatorProjectFile = "./src/es-replicator/es-replicator.csproj";
+var deployment_packages_dir = "./artifacts/deployment-packages";
+// var packageFilePath = System.IO.Path.Combine(deployment_packages_dir, packageFileName);
 
 var buildNumber = "0";
 var version = new Semver.SemVersion(1);
@@ -172,6 +183,21 @@ Task("WhatBuildToPutHere")
             // CreateDirectory(library_packages_dir);
             // CopyFiles($"src/Huddle.Babble.Notifications.Uris/bin/{configuration}/Huddle.Babble.Notifications.Uris.*.nupkg", $"{library_packages_dir}");
         });
+		
+Task("Pack")
+    .IsDependentOn("WhatBuildToPutHere")
+    .Description("Move bin files to artifact location.")
+    .Does(() =>
+    {
+        CreateDirectory(deployment_packages_dir);
+        CleanDirectory(deployment_packages_dir);
+        
+        FileWriteText("./artifacts/VERSION.txt", version.ToString());
+
+		// Create a zip archive of the build artifacts
+		// Move files from bin to artifacts
+		CopyFiles($"./src/es-replicator/bin/Release/net8.0/**/*", $"{deployment_packages_dir}");
+    });
 
 // ***************
 // COMPOSITE TASKS
